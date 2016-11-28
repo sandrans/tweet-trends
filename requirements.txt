@@ -1,0 +1,15 @@
+boto3==1.4.2
+certifi==2016.9.26
+cryptography==1.6
+elasticsearch==5.0.1
+Flask==0.10.1
+itsdangerous==0.24
+Jinja2==2.8
+MarkupSafe==0.23
+pyOpenSSL==16.2.0
+requests==2.12.3
+requests-aws4auth==0.9
+tweepy==3.5.0
+urllib3==1.19
+watson-developer-cloud==0.22.0
+Werkzeug==0.11.11
