@@ -9,8 +9,8 @@ from requests_aws4auth import AWS4Auth
 
 app = Flask(__name__)
 
-YOUR_ACCESS_KEY = ""
-YOUR_SECRET_KEY = ""
+YOUR_ACCESS_KEY = "AKIAIGWEBBHB5DVEXPLA"
+YOUR_SECRET_KEY = "AfQ206a07F5tDQwX1pdfatsWBrW6ygNzRF0cmMxz"
 REGION = "us-east-1"
 # host = 'tweetmap-env.bmcf8muqyd.us-west-2.elasticbeanstalk.com'
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')

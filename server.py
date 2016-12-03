@@ -10,9 +10,10 @@ from datetime import *
 import time
 import certifi
 from requests_aws4auth import AWS4Auth
+import boto3
 
-YOUR_ACCESS_KEY = ""
-YOUR_SECRET_KEY = ""
+YOUR_ACCESS_KEY = "AKIAIGWEBBHB5DVEXPLA"
+YOUR_SECRET_KEY = "AfQ206a07F5tDQwX1pdfatsWBrW6ygNzRF0cmMxz"
 REGION = "us-east-1"
 
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
