@@ -11,11 +11,11 @@ import boto3
 from requests_aws4auth import AWS4Auth
 
 
-YOUR_ACCESS_KEY = "AKIAIGWEBBHB5DVEXPLA"
-YOUR_SECRET_KEY = "AfQ206a07F5tDQwX1pdfatsWBrW6ygNzRF0cmMxz"
+YOUR_ACCESS_KEY = ""
+YOUR_SECRET_KEY = ""
 REGION = "us-east-1"
 
-awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
+awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'sqs')
 host = "search-tweet-trends-hq2ehcbl6hi5iqyn7xairven3e.us-east-1.es.amazonaws.com"
 access_token="28203065-m0YfUbocnLSgTzmfV5kYX7FIhLHo71s9Pb36yu3jB"
 access_token_secret="1xc2XNwgXhCEm34NbhDeuIEnPuDAqHkUrG2Wpp7W1p2ge"
@@ -41,17 +41,30 @@ consumer_secret="czLjLODWigoHvUxdXR7KhPoucrTP36HVxZtK19wqDATpQjM3tW"
 # #     }
 # # })
 
+#session = Session(aws_access_key_id=SQSAccessKey, aws_secret_access_key=SQSSecretKey,region_name=sqsRegion)
+
+
 # Get the service resource
 sqs = boto3.resource('sqs')
 
 # Create the queue. This returns an SQS.Queue instance
-queue = sqs.create_queue(QueueName='tweet-queue', Attributes={'DelaySeconds': '5'})
+# queue = sqs.create_queue(QueueName='tweet-queue', Attributes={'DelaySeconds': '5'})
 
 # You can now access identifiers and attributes
+# print(queue.url)
+# print(queue.attributes.get('DelaySeconds'))
+queue_name='tweet-queue'
+
+# queue = sqs.create_queue(QueueName=queue_name, Attributes={'DelaySeconds': '5'})
+queue = sqs.get_queue_by_name(QueueName='tweet-queue')
 print(queue.url)
 print(queue.attributes.get('DelaySeconds'))
 
+
 class Producer(StreamListener):
+
+	global queue
+
 	def on_data(self, doc_data):
 		json_data=json.loads(doc_data)
 		data={}
@@ -68,8 +81,12 @@ class Producer(StreamListener):
 				print ("printing attributes...\n")
 				print (attributes)
 
-				queue.send_message(MessageBody=data["text"], MessageAttributes=attributes)
+				print(queue.url)
+				res = queue.send_message(MessageBody=data["text"], MessageAttributes=attributes)
+				print(res.get('MessageId'))
+
 				# res = es.index(index="test", doc_type='tweet', body=str(data))
+				print("Message sent?")
 			except:
 				pass
 
@@ -84,8 +101,10 @@ class Producer(StreamListener):
 				print ("printing attributes...\n")
 				print (attributes)
 				
+				print(queue.url)
 				queue.send_message(MessageBody=data["text"], MessageAttributes=attributes)
 				# res = es.index(index="test", doc_type='tweet', body=str(data))
+				print("Message sent?")
 			except:
 				pass
 

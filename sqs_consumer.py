@@ -10,8 +10,8 @@ from requests_aws4auth import AWS4Auth
 
 # CONSUMER - Sends messages to ES
 
-YOUR_ACCESS_KEY = "AKIAIGWEBBHB5DVEXPLA"
-YOUR_SECRET_KEY = "AfQ206a07F5tDQwX1pdfatsWBrW6ygNzRF0cmMxz"
+YOUR_ACCESS_KEY = ""
+YOUR_SECRET_KEY = ""
 REGION = "us-east-1"
 
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
@@ -73,4 +73,3 @@ while(1):
 	    message.delete()
 
 
-	    
