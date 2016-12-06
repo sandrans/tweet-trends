@@ -3,145 +3,183 @@
   <head>
     <style>
        #map {
-        height: 100vh;
-        width: 100vw;
+        height: 80vh;
+        width: 80vw;
         left: 0;
+       }
+       #dropdown {
+        font-size:20px;
+        width: 80vh;
+        margin: 10px;
        }
     </style>
   </head>
   <body>
+    <center>
     <h3>Tweet Map App</h3>
     <select id="dropdown">
-      <option value="obama">obama</option>
-      <option value="trump">trump</option>
-      <option value="clinton">clinton</option>
+      <option value="" disabled selected="selected">Select Search Term</option>
+      <option value="obama">Obama</option>
+      <option value="trump">Trump</option>
+      <option value="clinton">Clinton</option>
+      <option value="election">Election</option>
+      <option value="happy trump">Happy Trump</option>
+      <option value="sad trump">Sad Trump</option>
+      <option value="happy clinton">Happy Clinton</option>
+      <option value="sad clinton">Sad Clinton</option>
+      <option value="moose">Moose</option>
+      <option value="haiku">Haiku</option>
     </select>
     <div id="map"></div>
+    </center>
     <script>
-    var map;
-      function initMap() {
-        var columbia = {lat: 40.8075, lng: -73.9626};
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 5,
-          center: columbia
-        });
-        var marker = new google.maps.Marker({
-          position: columbia,
-          map: map
-        });
+    // var map;
+    //   function initMap() {
+    //     var columbia = {lat: 40.8075, lng: -73.9626};
+    //     map = new google.maps.Map(document.getElementById('map'), {
+    //       zoom: 5,
+    //       center: columbia
+    //     });
+    //     var marker = new google.maps.Marker({
+    //       position: columbia,
+    //       map: map
+    //     });
 
-        document.getElementById("dropdown").onchange = function(){
-          keyword = this.value;
-          if(keyword == null){
-            keyword = "obama";
-          }
-          console.log(keyword);
-          reQuery(keyword);
-        }
+    //     document.getElementById("dropdown").onchange = function(){
+    //       keyword = this.value;
+    //       reQuery(keyword);
+    //     }
 
-      }
-      function addMarker(tweet){
-        var pos = {lat: tweets.coordinates[1], lng: tweets.coordinates[1]};
-        var marker = new google.maps.Marker({
-          position: pos,
-          map: map
-        });
-      }
-      function reQuery(param){
+    //   }
+    //   function addMarker(tweet){
+    //     var pos = {lat: tweets.coordinates[1], lng: tweets.coordinates[1]};
+    //     var marker = new google.maps.Marker({
+    //       position: pos,
+    //       map: map
+    //     });
+    //   }
+    //   function reQuery(param){
 
 
-        console.log(this.responseText);
-        // var search_str = "haiku";
-        var oReq = new XMLHttpRequest();
-        oReq.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-            //deleteMarkers();
-            var obj = JSON.parse(this.responseText);
-            var tweets = obj.hits.hits
-            for(var i = 0; i < tweets.length; i++){
-                addContent(tweets[i])
-            }
-          }
-        //oReq.addEventListener("load", reqListener);
-      // var url = "http://localhost:3000/tweets/getTweets?search="+search_str;
-      // console.log(url);
-        console.log(param);
-        oReq.open("GET", "/" + param, true);
-        oReq.send();
-      }
+    //     console.log(this.responseText);
+    //     // var search_str = "haiku";
+    //     var oReq = new XMLHttpRequest();
+    //     oReq.onreadystatechange = function() {
+    //       if (this.readyState == 4 && this.status == 200) {
+    //         //deleteMarkers();
+    //         var obj = JSON.parse(this.responseText);
+    //         var tweets = obj.hits.hits
+    //         for(var i = 0; i < tweets.length; i++){
+    //             addContent(tweets[i])
+    //         }
+    //       }
+    //     //oReq.addEventListener("load", reqListener);
+    //   // var url = "http://localhost:3000/tweets/getTweets?search="+search_str;
+    //   // console.log(url);
+    //     oReq.open("GET", "/tweets/" + param, true);
+    //     oReq.send();
+    //   }
 
-    </script>
+    // </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACGeO9TeMbOLSk1We5O5Yrh5FXnGUQSbs&callback=initMap">
     </script>
   </body>
 </html>
 
+<script>
+  var markers = [];
+  var searchTerm;
+  var map;
+  var infoWindow;
 
-<!--     <script>
-      var map;
-      var infowindow;
-      var markers = [];
-      var keyword;
-      function initMap() {
-        var center = {lat: 0, lng: 0};
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 2,
-          center: center
-        });
-        document.getElementById("drop").onchange = function(){
-          keyword = this.value;
-          start(keyword);
-        }
-        setInterval(function(){start(keyword)},10000);
-      }
-      function addContent(tweets){
-          var myPosition = {lat: tweets.geo[1], lng: tweets.geo[0] };
-          var time = tweets.time;
-          var user = tweets.user;
-          var text = tweets.text;
-          var prev_infowindow = false;
-          // API Reference: https://developers.google.com/maps/documentation/javascript/examples/infowindow-simple
-          var marker = new google.maps.Marker({
-              position:myPosition,
-              map: map
-          });
-          markers.push(marker);
-          setMapOnAll(map);
-          google.maps.event.addListener(marker, "click", function () {
-                if (infowindow) {infowindow.close();}
-                var contentString =  '<div id="content">'+'<div id="siteNotice">'+'</div>'+
-                          '<h1 id="firstHeading" class="Twitter message">Twitter message</h1>'+
-                          '<div id="bodyContent">' + user + ' : '  +  text +'</div>'+'</div>';
-                infowindow = new google.maps.InfoWindow({
-                  content: contentString
-                });
-                infowindow.open(map, marker);
-          });
-      }
-      function start(keyword) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-            deleteMarkers();
-            var obj = JSON.parse(this.responseText);
-            var tweets = obj.hits.hits
-            for(var i = 0; i < tweets.length; i++){
-                addContent(tweets[i]._source)
-            }
-          }
-        };
-        xhttp.open("GET", "/" + keyword, true);
-        xhttp.send();
-      }
-      function deleteMarkers() {
-        setMapOnAll(null);
+  // Initialize the map, dropdown
+  function initMap() {
+    // Columbia U. at center
+    var center = {lat: 40.8075, lng: -73.9626};
+
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 3,
+      center: center
+    });
+
+    // Attach GET request to dropdown
+    document.getElementById("dropdown").onchange = function(){
+      searchTerm = this.value;
+      makeRequest(searchTerm);
+    }
+
+    setInterval(function(){makeRequest(searchTerm)},10000);
+  }
+
+  function resetMap(map) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
+  }
+
+  // Get tweets
+  function makeRequest(searchTerm) {
+    var xhttp = new XMLHttpRequest();
+
+    // Formulate GET request
+    xhttp.open("GET", "/tweets/" + searchTerm, true);
+
+    xhttp.onreadystatechange = function() {
+      
+      // If the GET request is successful
+      if(this.readyState == 4 && this.status == 200){
+
+        // Delete markers
+        resetMap(null);
         markers = [];
-      }
-      function setMapOnAll(map) {
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(map);
+
+        // Get tweets from response object
+        var tweets = JSON.parse(this.responseText);
+        
+        for(var i = 0; i < tweets.length; i++){
+            addTweets(tweets[i]._source)
         }
       }
-    </script> -->
+    };
+    
+    xhttp.send();
+  }
+
+  // Add tweets to the map
+  function addTweets(tweets){
+
+      var text = tweets.text;
+      var sent = tweets.sentiment;                          // ADDED
+      var tweetCoord = {lat: tweets.coordinates[1], lng: tweets.coordinates[0]};
+
+      var marker = new google.maps.Marker({
+          position: tweetCoord,
+          map: map
+      });
+
+      markers.push(marker);
+      resetMap(map);
+
+      // Add click feature to markers
+      google.maps.event.addListener(marker, "click", function(){
+            if(infoWindow != null){
+              infoWindow.close();
+            }
+
+            var newDiv = document.createElement("div");
+            var newContent = document.createTextNode(text);
+            newDiv.appendChild(newContent);
+
+            var sentiment = document.createTextNode(sent);  // ADDED
+            newDiv.appendChild(sentiment);                  // ADDED
+            
+            infoWindow = new google.maps.InfoWindow({
+              content: newDiv
+            });
+
+            infoWindow.open(map, marker);
+      });
+  }
+</script>
 

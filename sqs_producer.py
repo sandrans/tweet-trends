@@ -7,7 +7,7 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 from config import *
 import sys
-
+import time
 import boto3
 
 from requests_aws4auth import AWS4Auth
@@ -42,6 +42,7 @@ consumer_secret="czLjLODWigoHvUxdXR7KhPoucrTP36HVxZtK19wqDATpQjM3tW"
 # print(queue)
 # print(queue.attributes.get('DelaySeconds'))
 
+# time.sleep(4)
 
 class Producer(StreamListener):
 

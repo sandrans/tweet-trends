@@ -48,6 +48,24 @@ sqs = boto3.resource('sqs')
 queue = sqs.get_queue_by_name(QueueName='tweet-queue-main')
 
 
+
+client = boto3.client('sns')
+response = client.create_topic(
+    Name='tweet_sentiments'
+)
+topic_arn = response['TopicArn']
+print (response)
+
+# ENDPOINT cannot be localhost
+subscriber = client.subscribe(
+  TopicArn=topic_arn,
+  Protocol='http',
+  Endpoint='http://160.39.172.176:8000/notification'
+)
+print(subscriber)
+
+
+
 while(1):
 
   # Process messages by printing out body and optional author name
@@ -81,13 +99,14 @@ while(1):
           }
           print "Final Data: {}\n".format(data)
 
-          client = boto3.client('sns')
-          response = client.create_topic(
-              Name='tweet_sentiments'
-          )
-          topic_arn = response['TopicArn']
-          print (response)
+          # client = boto3.client('sns')
+          # response = client.create_topic(
+          #     Name='tweet_sentiments'
+          # )
+          # topic_arn = response['TopicArn']
+          # print (response)
           # print (response["arn"])
+
           published_message = client.publish(
               TopicArn=topic_arn,
               Message=json.dumps(data, ensure_ascii=False),
