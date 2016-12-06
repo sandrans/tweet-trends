@@ -69,7 +69,21 @@ class Producer(StreamListener):
 
         print("this is the queue {}").format(queue)
         queue.send_message(MessageBody="hoohoho")
-        res = queue.send_message(MessageBody=data["text"], MessageAttributes=attributes)
+        # res = queue.send_message(MessageBody=str(data["text"]), MessageAttributes={'tweet': 'yes'})
+        res = queue.send_message(MessageBody=str(data["text"]).encode('ascii', 'ignore'), MessageAttributes={
+          'Name': {
+            'StringValue': '{}'.format(attributes["name"]),
+            'DataType': 'String'
+          },
+          'Coordinates': {
+            'StringValue': '{}'.format(attributes["coordinates"]),
+            'DataType': 'String'
+          },
+          'CreatedAt': {
+            'StringValue': '{}'.format(attributes["created_at"]),
+            'DataType': 'String'
+          }
+        })
         print(res.get('MessageId'))
 
         # res = es.index(index="test", doc_type='tweet', body=str(data))
@@ -83,7 +97,7 @@ class Producer(StreamListener):
       try:
         data["text"]=str(json_data['text'])
         attributes["coordinates"]= (json_data['place']['bounding_box']['coordinates'][0][0][0],json_data['place']['bounding_box']['coordinates'][0][0][1])
-        attributes["name"]=str(json_data['user']['name']).encode('utf-8', 'ignore')
+        attributes["name"]=str(json_data['user']['name']).encode('ascii', 'ignore')
         attributes["created_at"]=json_data['created_at']
         print ("printing data...\n")
         print (data)
@@ -102,8 +116,22 @@ class Producer(StreamListener):
         queue = sqs.get_queue_by_name(QueueName=queue_name)
 
         print("this is the queue {}").format(queue)
-        queue.send_message(MessageBody="teehee")
-        queue.send_message(MessageBody=data["text"], MessageAttributes=attributes)
+        # queue.send_message(MessageBody="teehee")
+        res = queue.send_message(MessageBody=str(data["text"]).encode('ascii', 'ignore'), MessageAttributes={
+          'Name': {
+            'StringValue': '{}'.format(attributes["name"]),
+            'DataType': 'String'
+          },
+          'Coordinates': {
+            'StringValue': '{}'.format(attributes["coordinates"]),
+            'DataType': 'String'
+          },
+          'CreatedAt': {
+            'StringValue': '{}'.format(attributes["created_at"]),
+            'DataType': 'String'
+          }
+        })
+        print(res.get('MessageId'))
         # res = es.index(index="test", doc_type='tweet', body=str(data))
         print("Message sent?")
       except:

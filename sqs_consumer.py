@@ -6,12 +6,12 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 import boto3
+from config import *
+
 from requests_aws4auth import AWS4Auth
 
 # CONSUMER - Sends messages to ES
 
-YOUR_ACCESS_KEY = ""
-YOUR_SECRET_KEY = ""
 REGION = "us-east-1"
 
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
@@ -31,7 +31,7 @@ es = Elasticsearch(
   use_ssl=True,
   connection_class=RequestsHttpConnection
   )
-es.indices.create(index='test', ignore=400)
+es.indices.create(index='tweet-sqs', ignore=400)
 
 print (es.info())
 
@@ -39,37 +39,38 @@ print (es.info())
 sqs = boto3.resource('sqs')
 
 # Get the queue
-queue = sqs.get_queue_by_name(QueueName='tweet-queue')
+queue = sqs.get_queue_by_name(QueueName='tweet-queue-main')
 
 
 while(1):
 
-	# Process messages by printing out body and optional author name
-	for message in queue.receive_messages(MessageAttributeNames=['All']):
-	    # # Get the custom author message attribute if it was set
-	    # author_text = ''
-	    # if message.message_attributes is not None:
-	    #     author_name = message.message_attributes.get('Author').get('StringValue')
-	    #     if author_name:
-	    #         author_text = ' ({0})'.format(author_name)
-	    name = ''
-	    coords = ''
-	    if message.message_attributes is not None:
-	    	name = message.message_attributes.get('name').get('StringValue')
-	    	coords = message.message_attributes.get('coordinates').get('StringValue')
+  # Process messages by printing out body and optional author name
+  for message in queue.receive_messages(MessageAttributeNames=['All']):
+      # # Get the custom author message attribute if it was set
+      # author_text = ''
+      # if message.message_attributes is not None:
+      #     author_name = message.message_attributes.get('Author').get('StringValue')
+      #     if author_name:
+      #         author_text = ' ({0})'.format(author_name)
+      name = ''
+      coords = ''
+      # print message
+      if message.message_attributes is not None:
+        name = message.message_attributes.get('Name').get('StringValue')
+        coords = message.message_attributes.get('Coordinates').get('StringValue')
 
-	    # Print out the body and author (if set)
-	    print('TWEET, {0}	{1}	{2}'.format(message.body, name, coords))
+      # Print out the body and author (if set)
+      print('TWEET, {0} {1} {2}'.format(message.body, name, coords))
 
-	    data = {
-	    	'text' : message.body,
-	    	'name' : name,
-	    	'coordinates' : coords
-	    }
-	    res = es.index(index="test", doc_type='tweet', body=data)
+      data = {
+        'text' : message.body,
+        'name' : name,
+        'coordinates' : coords
+      }
+      res = es.index(index="tweet-sqs", doc_type='tweet', body=data)
 
-	    print(res)
-	    # Let the queue know that the message is processed
-	    message.delete()
+      print(res)
+      # Let the queue know that the message is processed
+      message.delete()
 
 
