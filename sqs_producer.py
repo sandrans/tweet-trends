@@ -90,7 +90,7 @@ class Producer(StreamListener):
         print("Message sent?")
       except:
         # print
-        print sys.exc_info()
+        print (sys.exc_info())
         pass
 
     elif json_data.get('place') is not None:
@@ -135,7 +135,7 @@ class Producer(StreamListener):
         # res = es.index(index="test", doc_type='tweet', body=str(data))
         print("Message sent?")
       except:
-        print sys.exc_info()
+        print (sys.exc_info())
 
         pass
 
