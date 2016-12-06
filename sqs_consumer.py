@@ -18,7 +18,7 @@ from requests_aws4auth import AWS4Auth
 alchemy_language = AlchemyLanguageV1(api_key='74ee0eee2415cab433d5733bb460f6ca49ee5053')
 
 
-REGION = "us-east-1"
+REGION = "us-west-2"
 
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
 host = "search-tweet-trends-hq2ehcbl6hi5iqyn7xairven3e.us-east-1.es.amazonaws.com"
@@ -80,8 +80,20 @@ while(1):
             'sentiment': sent
           }
           print "Final Data: {}\n".format(data)
-          sns = boto3.resource('sns')
 
+          client = boto3.client('sns')
+          response = client.create_topic(
+              Name='tweet_sentiments'
+          )
+          topic_arn = response['TopicArn']
+          print (response)
+          # print (response["arn"])
+          published_message = client.publish(
+              TopicArn=topic_arn,
+              Message=json.dumps(data, ensure_ascii=False),
+              MessageStructure='string'
+          )
+          print("We published something!")
           # res = es.index(index="tweet-sqs", doc_type='tweet', body=data)
 
           # print(res)
