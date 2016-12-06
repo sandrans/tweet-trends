@@ -28,43 +28,50 @@ access_token_secret="1xc2XNwgXhCEm34NbhDeuIEnPuDAqHkUrG2Wpp7W1p2ge"
 consumer_key="euXCzLT4bHep6PMSwFha1X610"
 consumer_secret="czLjLODWigoHvUxdXR7KhPoucrTP36HVxZtK19wqDATpQjM3tW"
 
-# es = Elasticsearch(
-#   hosts=[{
-#     'host': host,
-#     'port': 443,
-#   }],
-#   http_auth=awsauth,
-#   use_ssl=True,
-#   connection_class=RequestsHttpConnection
-#   )
-# es.indices.create(index='tweet-sqs', ignore=400)
-
-# print (es.info())
-
 # Get the service resource
 sqs = boto3.resource('sqs')
 
 # Get the queue
 queue = sqs.get_queue_by_name(QueueName='tweet-queue-main')
 
+# client = boto3.client('sns')
+# response = client.create_topic(
+#     Name='tweet_sentiments'
+# )
+# topic_arn = response['TopicArn']
+# print (response)
+
+# # ENDPOINT cannot be localhost
+# subscriber = client.subscribe(
+#   TopicArn=topic_arn,
+#   Protocol='http',
+#   Endpoint='http://160.39.172.176:8000/notification'
+# )
+# print(subscriber)
 
 
-client = boto3.client('sns')
-response = client.create_topic(
-    Name='tweet_sentiments'
-)
-topic_arn = response['TopicArn']
-print (response)
+def sns_connect():
+    global client
+    global topicarn
+    client = boto3.client('sns')
+    #return client
+    response = client.create_topic(
+        Name='tweet_sentiments'
+    )
 
-# ENDPOINT cannot be localhost
-subscriber = client.subscribe(
-  TopicArn=topic_arn,
-  Protocol='http',
-  Endpoint='http://160.39.172.176:8000/notification'
-)
-print(subscriber)
+    #print(tweet_message)
+    topicarn = response['TopicArn']
+    #print(response)
+    subscriber = client.subscribe(
+        TopicArn=topicarn,
+        Protocol='http' ,
+        #Endpoint='http://127.0.0.1:5000/notification' 108.6.175.225
+        Endpoint='http://652fd45f.ngrok.io/notification'
+        #Endpoint = 'http://35.162.251.85:5000/notification'
+    )
+    print(("Subscriber: {}\n").format(subscriber))
 
-
+sns_connect()
 
 while(1):
 
@@ -97,7 +104,7 @@ while(1):
             'coordinates' : coords,
             'sentiment': sent
           }
-          print "Final Data: {}\n".format(data)
+          print ("Final Data: {}\n").format(data)
 
           # client = boto3.client('sns')
           # response = client.create_topic(
@@ -108,11 +115,12 @@ while(1):
           # print (response["arn"])
 
           published_message = client.publish(
-              TopicArn=topic_arn,
+              TopicArn=topicarn,
               Message=json.dumps(data, ensure_ascii=False),
               MessageStructure='string'
           )
           print("We published something!")
+          # client.confirm_subsciption(str(req["TopicArn"]), str(req["Token"]))
           # res = es.index(index="tweet-sqs", doc_type='tweet', body=data)
 
           # print(res)

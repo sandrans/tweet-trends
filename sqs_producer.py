@@ -20,7 +20,7 @@ REGION = "us-west-2"
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'sqs')
 # print YOUR_ACCESS_KEY
 # print YOUR_SECRET_KEY
-host = "search-tweet-trends-hq2ehcbl6hi5iqyn7xairven3e.us-east-1.es.amazonaws.com"
+# host = "search-tweet-trends-hq2ehcbl6hi5iqyn7xairven3e.us-east-1.es.amazonaws.com"
 access_token="28203065-m0YfUbocnLSgTzmfV5kYX7FIhLHo71s9Pb36yu3jB"
 access_token_secret="1xc2XNwgXhCEm34NbhDeuIEnPuDAqHkUrG2Wpp7W1p2ge"
 consumer_key="euXCzLT4bHep6PMSwFha1X610"
@@ -155,9 +155,9 @@ if __name__ == '__main__':
   auth.set_access_token(access_token, access_token_secret)
   stream = Stream(auth, listener)
 
-  stream.filter(track=['haiku', 'poem', 'poetry', 'obama', 'clinton', 'movie', 'review', 'food',
-    'film', 'election', 'happy', 'sad', 'farce', 'great', 'amazing', 'why', 'lions', 'moose',
-    'tigers', 'lion', 'cubs', 'emus', 'ostriches', 'ostrich', 'head', 'sand', 'cute', 'sad moose',
+  stream.filter(track=['haiku', 'poem', 'poetry', 'obama', 'clinton', 'movie', 'movies','review', 'food',
+    'film', 'election', 'lions', 'moose',
+    'tigers', 'lion', 'cubs', 'emus', 'ostriches', 'ostrich', 'sad moose',
     'sad clinton', 'happy clinton'])
 
 

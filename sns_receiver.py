@@ -9,17 +9,32 @@ from requests_aws4auth import AWS4Auth
 
 REGION="us-west-2"
 
+# es = Elasticsearch(
+#   hosts=[{
+#     'host': host,
+#     'port': 443,
+#   }],
+#   http_auth=awsauth,
+#   use_ssl=True,
+#   connection_class=RequestsHttpConnection
+#   )
+# es.indices.create(index='tweet-sqs', ignore=400)
+
+# print (es.info())
+
 # req = {
-# 	'Type' : 'Notification',
-# 	'Message' : {
-# 		'text' : "tweet here about clinton or whatever",
-# 		'coordinates' : (-30.0, 45.9),
-# 		'sentiment' : 'positive'
-# 	}
+#   'Type' : 'Notification',
+#   'Message' : {
+#     'text' : "tweet here about clinton or whatever",
+#     'coordinates' : (-30.0, 45.9),
+#     'sentiment' : 'positive'
+#   }
 # }
 
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
-host = "search-tweet-trends-24sebrx4nnqqvhbh3c737rotcq.us-west-2.es.amazonaws.com"
+host = "search-tweet-trends-euni-bv5nxkgvthtwhgtrq6grokr4oi.us-west-2.es.amazonaws.com"
+# host = "search-tweet-trends-24sebrx4nnqqvhbh3c737rotcq.us-west-2.es.amazonaws.com"
+global es
 es = Elasticsearch(
   hosts=[{
     'host': host,
@@ -29,37 +44,40 @@ es = Elasticsearch(
   use_ssl=True,
   connection_class=RequestsHttpConnection
   )
-es.indices.create(index='test', ignore=400)
+es.indices.create(index='test-index', ignore=400)
 
 print (es.info())
 
 def notification(req):
+  global client
+  client = boto3.client('sns')
+  # conn = sns.SNSConnection(aws_access_key_id=YOUR_ACCESS_KEY, aws_secret_access_key =YOUR_SECRET_KEY)
 
-	client = boto3.client('sns')
-	req = req.decode("utf-8")
-	req = ast.literal_eval(req)
-	print("NOTIFICATION", req)
-	if (req["Type"] == 'SubscriptionConfirmation'):
-		confirmation = client.confirm_subsciption(TopicArn=req["TopicArn"], Token=req["Token"])
-		print(confirmation)
-	elif (req["Type"] == 'Notification'):
-		msg = req['Message']
-		print(msg)
+  req = req.decode("utf-8")
+  # req = ast.literal_eval(req)
+  req = json.loads(req)
+  print("NOTIFICATION", req)
+  if (req["Type"] == 'SubscriptionConfirmation'):
+    confirmation = client.confirm_subscription(TopicArn=req["TopicArn"], Token=req["Token"])
 
-		es = Elasticsearch()
-		tweet = {
-			'text' : str(msg['text']),
-			'name' : str(msg['name']),
-            'coordinates' : str(msg['coordinates']),
-            'sentiment': str(msg['sentiment'])
-		}
+    print("Confirmation: {}\n".format(confirmation))
 
-		res = es.index(index="test", doc_type='tweet', body=str(tweet))
+  else:
+    if (req["Type"] == 'Notification'):
+      msg = json.loads(req['Message'])
+      print("Notification message: {}\n".format(msg))
 
-		print("INDEXED:")
-		print(res)
-	else:
-		pass
+      tweet = {}
 
+      tweet['text'] = msg['text']
+      tweet['name'] = msg['name']
+      tweet['coordinates'] = msg['coordinates']
+      tweet['sentiment'] = msg['sentiment']
 
+      res = es.index(index="test-index", doc_type='tweet', body=tweet)
 
+      print("INDEXED:")
+      print(res)
+    else:
+      print "PASSING OVER: {}".format(req)
+      pass

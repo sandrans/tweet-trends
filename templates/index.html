@@ -27,6 +27,7 @@
       <option value="sad trump">Sad Trump</option>
       <option value="happy clinton">Happy Clinton</option>
       <option value="sad clinton">Sad Clinton</option>
+      <option value="great">great</option>
       <option value="moose">Moose</option>
       <option value="haiku">Haiku</option>
     </select>
@@ -93,6 +94,20 @@
   var map;
   var infoWindow;
 
+  var image_positive = {
+    url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+  };
+
+  var image_negative = {
+    url: 'http://images.clipartbro.com/5/-5813.png',
+  };
+
+
+  var shape = {
+    coords: [1, 1, 1, 20, 18, 20, 18, 1],
+    type: 'poly'
+  };
+
   // Initialize the map, dropdown
   function initMap() {
     // Columbia U. at center
@@ -126,7 +141,7 @@
     xhttp.open("GET", "/tweets/" + searchTerm, true);
 
     xhttp.onreadystatechange = function() {
-      
+
       // If the GET request is successful
       if(this.readyState == 4 && this.status == 200){
 
@@ -136,27 +151,45 @@
 
         // Get tweets from response object
         var tweets = JSON.parse(this.responseText);
-        
+
         for(var i = 0; i < tweets.length; i++){
             addTweets(tweets[i]._source)
         }
       }
     };
-    
+
     xhttp.send();
   }
 
   // Add tweets to the map
   function addTweets(tweets){
+      var coords = tweets.coordinates.split(",");
+      console.log(coords);
+      var lat = parseFloat(coords[1].replace(")",""));
+      var lng = parseFloat(coords[0].replace("(", ""));
 
+      console.log(tweets);
       var text = tweets.text;
       var sent = tweets.sentiment;                          // ADDED
-      var tweetCoord = {lat: tweets.coordinates[1], lng: tweets.coordinates[0]};
+      var tweetCoord = {lat: lat, lng: lng};
+      console.log(tweetCoord);
 
+      if (sent == 'neutral') {
+        var marker = new google.maps.Marker({
+          position: tweetCoord,
+          map: map,
+          icon: image_negative,
+          shape: shape
+      });
+
+    } else {
       var marker = new google.maps.Marker({
           position: tweetCoord,
           map: map
       });
+    }
+
+
 
       markers.push(marker);
       resetMap(map);
@@ -173,7 +206,7 @@
 
             var sentiment = document.createTextNode(sent);  // ADDED
             newDiv.appendChild(sentiment);                  // ADDED
-            
+
             infoWindow = new google.maps.InfoWindow({
               content: newDiv
             });
