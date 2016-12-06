@@ -1,7 +1,6 @@
 boto3==1.4.2
 botocore==1.4.82
 certifi==2016.9.26
-cffi==1.9.1
 cryptography==1.6
 docutils==0.12
 elasticsearch==5.0.1

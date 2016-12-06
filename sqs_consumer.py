@@ -21,7 +21,7 @@ alchemy_language = AlchemyLanguageV1(api_key='74ee0eee2415cab433d5733bb460f6ca49
 REGION = "us-west-2"
 
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
-host = "search-tweet-trends-hq2ehcbl6hi5iqyn7xairven3e.us-east-1.es.amazonaws.com"
+# host = "search-tweet-trends-hq2ehcbl6hi5iqyn7xairven3e.us-east-1.es.amazonaws.com"
 
 access_token="28203065-m0YfUbocnLSgTzmfV5kYX7FIhLHo71s9Pb36yu3jB"
 access_token_secret="1xc2XNwgXhCEm34NbhDeuIEnPuDAqHkUrG2Wpp7W1p2ge"
@@ -66,8 +66,8 @@ def sns_connect():
         TopicArn=topicarn,
         Protocol='http' ,
         #Endpoint='http://127.0.0.1:5000/notification' 108.6.175.225
-        Endpoint='http://652fd45f.ngrok.io/notification'
-        #Endpoint = 'http://35.162.251.85:5000/notification'
+        # Endpoint='http://652fd45f.ngrok.io/notification'
+        Endpoint = 'flask-env.5gi2k9npmn.us-west-2.elasticbeanstalk.com/notification'
     )
     print(("Subscriber: {}\n").format(subscriber))
 
