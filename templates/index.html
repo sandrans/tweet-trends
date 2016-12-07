@@ -23,10 +23,6 @@
       <option value="trump">Trump</option>
       <option value="clinton">Clinton</option>
       <option value="election">Election</option>
-      <option value="happy trump">Happy Trump</option>
-      <option value="sad trump">Sad Trump</option>
-      <option value="happy clinton">Happy Clinton</option>
-      <option value="sad clinton">Sad Clinton</option>
       <option value="great">great</option>
       <option value="moose">Moose</option>
       <option value="haiku">Haiku</option>
@@ -99,7 +95,11 @@
   };
 
   var image_negative = {
-    url: 'http://images.clipartbro.com/5/-5813.png',
+    url: 'https://maps.google.com/mapfiles/kml/shapes/info-i_maps.png',
+  };
+
+  var image_neutral = {
+    url: 'https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png',
   };
 
 
@@ -174,18 +174,27 @@
       var tweetCoord = {lat: lat, lng: lng};
       console.log(tweetCoord);
 
-      if (sent == 'neutral') {
+      if (sent == 'positive') {
         var marker = new google.maps.Marker({
+          position: tweetCoord,
+          map: map,
+          icon: image_positive,
+          shape: shape
+      });
+
+    } else if (sent == 'negative') {
+      var marker = new google.maps.Marker({
           position: tweetCoord,
           map: map,
           icon: image_negative,
           shape: shape
       });
-
     } else {
       var marker = new google.maps.Marker({
           position: tweetCoord,
-          map: map
+          map: map,
+          icon: image_neutral,
+          shape: shape
       });
     }
 

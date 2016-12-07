@@ -89,7 +89,13 @@ ENV/
 .ropeproject
 
 # Elastic Beanstalk Files
+<<<<<<< HEAD
 
 #.elasticbeanstalk/*
 #!.elasticbeanstalk/*.cfg.yml
 #!.elasticbeanstalk/*.global.yml
+=======
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+>>>>>>> d3fcef4d13b1c781070a0aa0d83adc32ff2d93f1

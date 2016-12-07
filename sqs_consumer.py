@@ -15,7 +15,8 @@ from watson_developer_cloud import AlchemyLanguageV1
 from requests_aws4auth import AWS4Auth
 
 # CONSUMER - Sends messages to ES
-alchemy_language = AlchemyLanguageV1(api_key='74ee0eee2415cab433d5733bb460f6ca49ee5053')
+# alchemy_language = AlchemyLanguageV1(api_key='74ee0eee2415cab433d5733bb460f6ca49ee5053')
+alchemy_language = AlchemyLanguageV1(api_key='d597a1f26f81b4d9d3b95e42b1aa9c16fd072407')
 
 
 REGION = "us-west-2"
@@ -65,9 +66,10 @@ def sns_connect():
     subscriber = client.subscribe(
         TopicArn=topicarn,
         Protocol='http' ,
-        #Endpoint='http://127.0.0.1:5000/notification' 108.6.175.225
-        # Endpoint='http://652fd45f.ngrok.io/notification'
-        Endpoint = 'flask-env.gqzhgnmkgs.us-east-1.elasticbeanstalk.com/notification'
+        # Endpoint='http://160.39.210.193:8000/notification'
+        Endpoint='http://c9721563.ngrok.io/notification'
+        # Endpoint = 'flask-env.gqzhgnmkgs.us-east-1.elasticbeanstalk.com/notification'
+        # Endpoint = 'flask-env.5gi2k9npmn.us-west-2.elasticbeanstalk.com/notification'
     )
     print(("Subscriber: {}\n").format(subscriber))
 

@@ -30,8 +30,9 @@ REGION="us-west-2"
 #     'sentiment' : 'positive'
 #   }
 # }
-YOUR_ACCESS_KEY="AKIAJ7GFBSYVCRWBQ72A"
-YOUR_SECRET_KEY="regiCxIQefPYZrUd3ZJXUD52IlZzYydOHQkWNrnQ"
+# YOUR_ACCESS_KEY="AKIAJ7GFBSYVCRWBQ72A"
+# YOUR_SECRET_KEY="regiCxIQefPYZrUd3ZJXUD52IlZzYydOHQkWNrnQ"
+
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
 host = "search-tweet-trends-euni-bv5nxkgvthtwhgtrq6grokr4oi.us-west-2.es.amazonaws.com"
 # host = "search-tweet-trends-24sebrx4nnqqvhbh3c737rotcq.us-west-2.es.amazonaws.com"

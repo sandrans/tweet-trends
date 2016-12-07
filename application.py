@@ -14,8 +14,11 @@ import sns_receiver as sns
 application = Flask(__name__)
 
 REGION = "us-west-2"
-YOUR_ACCESS_KEY="AKIAJ7GFBSYVCRWBQ72A"
-YOUR_SECRET_KEY="regiCxIQefPYZrUd3ZJXUD52IlZzYydOHQkWNrnQ"
+# <<<<<<< HEAD
+# YOUR_ACCESS_KEY="AKIAJ7GFBSYVCRWBQ72A"
+# YOUR_SECRET_KEY="regiCxIQefPYZrUd3ZJXUD52IlZzYydOHQkWNrnQ"
+# =======
+# >>>>>>> d3fcef4d13b1c781070a0aa0d83adc32ff2d93f1
 # host = 'tweetmap-env.bmcf8muqyd.us-west-2.elasticbeanstalk.com'
 awsauth = AWS4Auth(YOUR_ACCESS_KEY, YOUR_SECRET_KEY, REGION, 'es')
 # host = 'search-tweet-trends-hq2ehcbl6hi5iqyn7xairven3e.us-east-1.es.amazonaws.com'
