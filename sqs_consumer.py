@@ -10,13 +10,22 @@ from config import *
 import json
 import re
 import sys
-from watson_developer_cloud import AlchemyLanguageV1
+# from watson_developer_cloud import AlchemyLanguageV1
+from alchemyapi import AlchemyAPI
+alchemy_api = AlchemyAPI()
+
+# from urllib.parse import quote
+from requests.utils import quote
 
 from requests_aws4auth import AWS4Auth
 
 # CONSUMER - Sends messages to ES
+<<<<<<< HEAD
 # alchemy_language = AlchemyLanguageV1(api_key='74ee0eee2415cab433d5733bb460f6ca49ee5053')
 alchemy_language = AlchemyLanguageV1(api_key='d597a1f26f81b4d9d3b95e42b1aa9c16fd072407')
+=======
+# alchemy_language = AlchemyLanguageV1(api_key='d597a1f26f81b4d9d3b95e42b1aa9c16fd072407')
+>>>>>>> 03b1070faac58085ca1b90771691e369abe9b8c2
 
 
 REGION = "us-west-2"
@@ -69,6 +78,8 @@ def sns_connect():
         # Endpoint='http://160.39.210.193:8000/notification'
         Endpoint='http://c9721563.ngrok.io/notification'
         # Endpoint = 'flask-env.gqzhgnmkgs.us-east-1.elasticbeanstalk.com/notification'
+        #Endpoint='http://127.0.0.1:5000/notification' 108.6.175.225
+        # Endpoint='http://c9721563.ngrok.io/notification'
         # Endpoint = 'flask-env.5gi2k9npmn.us-west-2.elasticbeanstalk.com/notification'
     )
     print(("Subscriber: {}\n").format(subscriber))
@@ -93,9 +104,16 @@ while(1):
         coords = message.message_attributes.get('Coordinates').get('StringValue')
         tweet = ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",message.body).split())
         print ("trying")
-        options={'language':'english'}
+        # options={'language':'english'}
         try:
-          response = alchemy_language.sentiment("text", tweet)
+
+          print(tweet)
+          # uri_tweet = quote(tweet)
+          # print(uri_tweet)
+          # response = alchemy_language.sentiment("text", tweet)
+          response = alchemy_api.sentiment("text", tweet, options={'language':'english'})
+
+          print(response)
           sent = response['docSentiment']['type']
           # Print out the body and author (if set)
           print('TWEET, {0} {1} {2}'.format(message.body, name, coords))
